@@ -2,18 +2,25 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Belém no Passado - RA</title>
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <title>BelÃ©m de Outrora - Realidade Aumentada</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   </head>
-  <body style="margin: 0; overflow: hidden;">
+  <body style="margin: 0px; overflow: hidden;">
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
       
       <a-assets>
-        </a-assets>
+        <img id="foto-historica" src="Ver-o-Peso.jpg">
+      </a-assets>
 
-      <a-box position="0 0.5 -3" material="color: red;" animation="property: rotation; to: 0 360 0; loop: true; dur: 5000"></a-box>
+      <a-marker preset="hiro">
+        <a-plane src="#foto-historica" 
+                 position="0 1 0" 
+                 rotation="-90 0 0" 
+                 width="2.5" 
+                 height="1.8">
+        </a-plane>
+      </a-marker>
 
       <a-entity camera></a-entity>
     </a-scene>
