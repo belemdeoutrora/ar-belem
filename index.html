@@ -48,25 +48,35 @@
     </model-viewer>
 
     <script>
-        // 1. Captura o parâmetro '?modelo=' que o FlutterFlow envia
+        // 1. Captura o parâmetro '?modelo=' enviado pelo FlutterFlow
         const urlParams = new URLSearchParams(window.location.search);
         const modeloRecebido = urlParams.get('modelo');
 
-        // 2. Mapeamento dos objetos 3D direto no código usando apelidos simples
+        // 2. Links diretos e seguros guardados dentro do código
         const modelosDisponiveis = {
             'cadeira': 'https://modelviewer.dev/shared-assets/models/Chair.glb',
             'astronauta': 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'
         };
 
-        // 3. Lógica de decisão de qual objeto carregar no visor
-        if (modeloRecebido && modelosDisponiveis[modeloRecebido.toLowerCase()]) {
-            // Se o FlutterFlow mandar 'cadeira' ou 'astronauta', carrega o link correspondente
-            document.getElementById('visor3d').setAttribute('src', modelosDisponiveis[modeloRecebido.toLowerCase()]);
-        } else if (modeloRecebido && (modeloRecebido.startsWith('http://') || modeloRecebido.startsWith('https://'))) {
-            // Se você mandar um link completo de internet no futuro, ele também aceita!
-            document.getElementById('visor3d').setAttribute('src', modeloRecebido);
+        // 3. Verifica o que o FlutterFlow enviou
+        if (modeloRecebido) {
+            const termoLimpo = modeloRecebido.toLowerCase().trim();
+            
+            if (modelosDisponiveis[termoLimpo]) {
+                // Se receber a palavra simples 'cadeira' ou 'astronauta', abre o link correto
+                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis[termoLimpo]);
+            } else if (termoLimpo.includes('chair.glb')) {
+                // Segurança extra: caso a URL inteira da cadeira venha colada no parâmetro
+                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['cadeira']);
+            } else if (termoLimpo.includes('astronaut.glb')) {
+                // Segurança extra: caso a URL inteira do astronauta venha colada no parâmetro
+                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['astronauta']);
+            } else {
+                // Se vier um texto desconhecido, usa a Cadeira como teste alternativo
+                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['cadeira']);
+            }
         } else {
-            // Caso dê algum erro ou venha vazio, o Astronauta entra como o plano B padrão
+            // Se o parâmetro vier vazio, usa o Astronauta como padrão
             document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['astronauta']);
         }
     </script>
