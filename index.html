@@ -48,16 +48,26 @@
     </model-viewer>
 
     <script>
-        // Função para ler o parâmetro '?modelo=' enviado pelo FlutterFlow
+        // 1. Captura o parâmetro '?modelo=' que o FlutterFlow envia
         const urlParams = new URLSearchParams(window.location.search);
         const modeloRecebido = urlParams.get('modelo');
 
-        if (modeloRecebido) {
-            // Se o FlutterFlow mandou uma URL, o visor carrega ela diretamente
+        // 2. Mapeamento dos objetos 3D direto no código usando apelidos simples
+        const modelosDisponiveis = {
+            'cadeira': 'https://modelviewer.dev/shared-assets/models/Chair.glb',
+            'astronauta': 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'
+        };
+
+        // 3. Lógica de decisão de qual objeto carregar no visor
+        if (modeloRecebido && modelosDisponiveis[modeloRecebido.toLowerCase()]) {
+            // Se o FlutterFlow mandar 'cadeira' ou 'astronauta', carrega o link correspondente
+            document.getElementById('visor3d').setAttribute('src', modelosDisponiveis[modeloRecebido.toLowerCase()]);
+        } else if (modeloRecebido && (modeloRecebido.startsWith('http://') || modeloRecebido.startsWith('https://'))) {
+            // Se você mandar um link completo de internet no futuro, ele também aceita!
             document.getElementById('visor3d').setAttribute('src', modeloRecebido);
         } else {
-            // Modelo reserva padrão caso o link venha totalmente vazio
-            document.getElementById('visor3d').setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
+            // Caso dê algum erro ou venha vazio, o Astronauta entra como o plano B padrão
+            document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['astronauta']);
         }
     </script>
 </body>
