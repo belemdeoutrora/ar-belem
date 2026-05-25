@@ -3,45 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador Belém de Outrora</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    <title>Visualizador 3D - Máquina do Tempo</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #f0f0f0; }
-        model-viewer { width: 100%; height: 100%; --ar-button-display: block; }
-        /* Estilo customizado para o botão de Realidade Aumentada */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: transparent;
+        }
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+        }
         #ar-button {
-            background-color: #0055ff;
-            background-image: url('https://fonts.gstatic.com/s/i/googlematerialicons/view_in_ar/v16/24px.svg');
-            background-repeat: no-repeat;
-            background-position: 12px 50%;
-            background-size: 24px 24px;
-            color: white;
-            font-family: sans-serif;
-            font-weight: 500;
-            font-size: 14px;
-            padding: 12px 16px 12px 44px;
-            border-radius: 24px;
+            background-color: #ffffff;
+            border-radius: 4px;
             border: none;
             position: absolute;
-            bottom: 60px;
-            right: 20px;
-            transform: translateX(0);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            cursor: pointer;
+            bottom: 16px;
+            right: 16px;
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #333333;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
 
-    <model-viewer 
-        id="visor3d"
-        ar 
-        ar-modes="webxr scene-viewer quick-look" 
-        camera-controls 
-        touch-action="pan-y"
-        shadow-intensity="1" 
-        auto-rotate>
-        
+    <model-viewer id="visor3d" 
+                  ar 
+                  ar-modes="webxr scene-viewer quick-look" 
+                  camera-controls 
+                  touch-action="pan-y" 
+                  shadow-intensity="1" 
+                  auto-rotate>
         <button slot="ar-button" id="ar-button">
             Ver no meu espaço (RA)
         </button>
@@ -51,12 +51,12 @@
         // Função para ler o parâmetro '?modelo=' enviado pelo FlutterFlow
         const urlParams = new URLSearchParams(window.location.search);
         const modeloRecebido = urlParams.get('modelo');
-        
+
         if (modeloRecebido) {
-            // Define o arquivo .glb que será carregado de forma dinâmica
+            // Se o FlutterFlow mandou uma URL, o visor carrega ela diretamente
             document.getElementById('visor3d').setAttribute('src', modeloRecebido);
         } else {
-            // Modelo padrão de teste caso não receba nenhum parâmetro
+            // Modelo reserva padrão caso o link venha totalmente vazio
             document.getElementById('visor3d').setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
