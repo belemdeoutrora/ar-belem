@@ -48,35 +48,28 @@
     </model-viewer>
 
     <script>
-        // 1. Captura o parâmetro '?modelo=' enviado pelo FlutterFlow
         const urlParams = new URLSearchParams(window.location.search);
         const modeloRecebido = urlParams.get('modelo');
 
-        // 2. Links diretos e seguros guardados dentro do código
+        // Banco de links internos corrigido e testado
         const modelosDisponiveis = {
-            'cadeira': 'https://modelviewer.dev/shared-assets/models/Chair.glb',
+            'pato': 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb',
             'astronauta': 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'
         };
 
-        // 3. Verifica o que o FlutterFlow enviou
         if (modeloRecebido) {
             const termoLimpo = modeloRecebido.toLowerCase().trim();
             
             if (modelosDisponiveis[termoLimpo]) {
-                // Se receber a palavra simples 'cadeira' ou 'astronauta', abre o link correto
                 document.getElementById('visor3d').setAttribute('src', modelosDisponiveis[termoLimpo]);
-            } else if (termoLimpo.includes('chair.glb')) {
-                // Segurança extra: caso a URL inteira da cadeira venha colada no parâmetro
-                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['cadeira']);
-            } else if (termoLimpo.includes('astronaut.glb')) {
-                // Segurança extra: caso a URL inteira do astronauta venha colada no parâmetro
-                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['astronauta']);
+            } else if (termoLimpo.includes('duck')) {
+                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['pato']);
             } else {
-                // Se vier um texto desconhecido, usa a Cadeira como teste alternativo
-                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['cadeira']);
+                // Se receber qualquer outra coisa ou o astronauta
+                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['astronauta']);
             }
         } else {
-            // Se o parâmetro vier vazio, usa o Astronauta como padrão
+            // Padrão de segurança
             document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['astronauta']);
         }
     </script>
