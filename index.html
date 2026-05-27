@@ -48,33 +48,43 @@
     </model-viewer>
 
     <script>
-        // 1. Pegamos o link bruto direto da barra de endereço para o navegador não cortar as barras (//)
+        // 1. Captura a URL atual da barra de endereços de forma segura
         const urlCompleta = window.location.href;
-        
-        // 2. Isolamos o que vem depois de "?modelo="
-        const partes = urlCompleta.split('?modelo=');
         const visor = document.getElementById('visor3d');
 
-        // Se houver algo depois do "?modelo="
-        if (partes.length > 1) {
-            // Pega o link do modelo e limpa espaços vazios
-            const modeloRecebido = decodeURIComponent(partes[1]).trim();
+        // 2. Verifica se existe o termo "?modelo=" na URL
+        if (urlCompleta.indexOf('?modelo=') !== -1) {
+            
+            // Separa o link do site do conteúdo do modelo
+            const partes = urlCompleta.split('?modelo=');
+            let modeloRecebido = partes[1];
 
-            // Atalhos caso você digite apenas as palavras de teste
-            if (modeloRecebido.toLowerCase() === 'pato' || modeloRecebido.toLowerCase() === 'duck') {
-                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb');
-            } 
-            else if (modeloRecebido.toLowerCase() === 'astronauta' || modeloRecebido.toLowerCase() === 'astronaut') {
-                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
-            } 
-            // Se for um link completo (do Firebase ou outro site), injeta direto no visor
-            else if (modeloRecebido !== '') {
-                visor.setAttribute('src', modeloRecebido);
+            if (modeloRecebido) {
+                // Decodifica caracteres como %2F e limpa espaços vazios nas pontas
+                modeloRecebido = decodeURIComponent(modeloRecebido).trim();
+                
+                // Cria uma versão em minúsculo apenas para a checagem das palavras de teste
+                const testePalavra = modeloRecebido.toLowerCase();
+
+                if (testePalavra === 'pato' || testePalavra === 'duck') {
+                    visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb');
+                } 
+                else if (testePalavra === 'astronauta' || testePalavra === 'astronaut') {
+                    visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
+                } 
+                // 3. Se for o link real do Firebase, injeta a URL bruta direto sem travar
+                else if (modeloRecebido !== '') {
+                    visor.setAttribute('src', modeloRecebido);
+                } 
+                else {
+                    visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
+                }
             } else {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             }
+
         } else {
-            // Se o link vier sem o "?modelo=", usa o astronauta por segurança
+            // Caso o link seja acessado puramente sem o "?modelo=", mostra o astronauta padrão
             visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
