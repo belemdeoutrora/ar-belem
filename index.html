@@ -53,23 +53,23 @@
         const modeloRecebido = urlParams.get('modelo');
         const visor = document.getElementById('visor3d');
 
-        if (modeloRecebido) {
-            // 2. Decodifica os caracteres especiais gerados pela navegação do FlutterFlow
+        if (modeloRecebido && modeloRecebido.trim() !== '') {
+            // 2. Decodifica o link completo enviado pelo FlutterFlow
             const urlDecodificada = decodeURIComponent(modeloRecebido).trim();
 
-            // 3. Força a identificação correta pelas palavras-chave contidas no link
-            if (urlDecodificada.toLowerCase().includes('duck') || urlDecodificada.toLowerCase().includes('pato')) {
+            // Atalho caso você ainda esteja usando as palavras de teste "pato" ou "astronauta" direto no navegador
+            if (urlDecodificada.toLowerCase() === 'pato' || urlDecodificada.toLowerCase() === 'duck') {
                 visor.setAttribute('src', 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb');
             } 
-            else if (urlDecodificada.toLowerCase().includes('astronaut')) {
+            else if (urlDecodificada.toLowerCase() === 'astronauta' || urlDecodificada.toLowerCase() === 'astronaut') {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             } 
+            // 3. SE FOR UM LINK DO FIREBASE OU GITHUB: Carrega o arquivo real direto, sem travar!
             else {
-                // Caso seja outra URL direta configurada no Firebase
                 visor.setAttribute('src', urlDecodificada);
             }
         } else {
-            // Fallback caso chegue completamente vazio
+            // Fallback de segurança caso o link venha 100% vazio
             visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
