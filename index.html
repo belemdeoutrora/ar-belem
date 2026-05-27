@@ -12,7 +12,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: transparent; /* De volta ao transparente para o FlutterFlow */
+            background-color: transparent;
         }
         model-viewer {
             width: 100%;
@@ -66,21 +66,31 @@
         const visor = document.getElementById('visor3d');
         const urlDecodificada = obterLinkModelo();
 
+        // Links de servidores alternativos com CORS totalmente liberado e aberto
+        const LINK_PATO_SEGURO = "https://raw.githubusercontent.com/google/model-viewer/master/packages/shared-assets/models/Duck.glb";
+        const LINK_ASTRONAUTA_SEGURO = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
+
         if (urlDecodificada) {
-            // Atalhos para testes rápidos digitando apenas a palavra
-            if (urlDecodificada.toLowerCase() === 'pato' || urlDecodificada.toLowerCase() === 'duck') {
-                visor.setAttribute('src', 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb');
+            // Se a URL contiver a palavra "pato", "duck" ou o link bloqueado da KhronosGroup, desvia para o link seguro
+            if (urlDecodificada.toLowerCase() === 'pato' || 
+                urlDecodificada.toLowerCase() === 'duck' || 
+                urlDecodificada.includes('KhronosGroup')) {
+                visor.setAttribute('src', LINK_PATO_SEGURO);
             } 
-            else if (urlDecodificada.toLowerCase() === 'astronauta' || urlDecodificada.toLowerCase() === 'astronaut') {
-                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
+            // Se contiver "astronauta" ou "astronaut"
+            else if (urlDecodificada.toLowerCase() === 'astronauta' || 
+                     urlDecodificada.toLowerCase() === 'astronaut' || 
+                     urlDecodificada.includes('Astronaut.glb')) {
+                visor.setAttribute('src', LINK_ASTRONAUTA_SEGURO);
             } 
-            // Links completos enviados pelo Firebase/FlutterFlow
-            else {
+            // Para quaisquer outros links diretos (como os seus futuros modelos reais do Firebase)
+            else if (urlDecodificada !== '') {
                 visor.setAttribute('src', urlDecodificada);
+            } else {
+                visor.setAttribute('src', LINK_ASTRONAUTA_SEGURO);
             }
         } else {
-            // Segurança caso o parâmetro venha vazio
-            visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
+            visor.setAttribute('src', LINK_ASTRONAUTA_SEGURO);
         }
     </script>
 </body>
