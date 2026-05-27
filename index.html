@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizador 3D - Máquina do Tempo</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.9.0/model-viewer.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     <style>
         body, html {
             margin: 0;
@@ -42,7 +42,6 @@
                   touch-action="pan-y" 
                   shadow-intensity="1"
                   exposure="1"
-                  environment-image="neutral"
                   auto-rotate>
         <button slot="ar-button" id="ar-button">
             Ver no meu espaço (RA)
@@ -50,49 +49,37 @@
     </model-viewer>
 
     <script>
-        function obterLinkModelo() {
-            const query = window.location.search;
-            if (!query) return null;
+        // Executa o script apenas após a página estar totalmente carregada
+        window.addEventListener('DOMContentLoaded', () => {
+            const visor = document.getElementById('visor3d');
             
-            const termo = "?modelo=";
-            const indice = query.indexOf(termo);
-            if (indice === -1) return null;
-            
-            // Recorta o link bruto exatamente após o "?modelo="
-            let resultado = query.substring(indice + termo.length);
-            return resultado ? decodeURIComponent(resultado).trim() : null;
-        }
+            // Usando o método nativo e estável do navegador para pegar parâmetros
+            const parametros = new URLSearchParams(window.location.search);
+            const modeloRecebido = parametros.get('modelo');
 
-        const visor = document.getElementById('visor3d');
-        const urlDecodificada = obterLinkModelo();
+            // Links de teste 100% ativos e com CORS liberado
+            const LINK_PATO = "https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb";
+            const LINK_ASTRONAUTA = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
 
-        // Links públicos oficiais do Google com CORS 100% aberto e ativo
-        const LINK_PATO_SEGURO = "https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb";
-        const LINK_ASTRONAUTA_SEGURO = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
+            if (modeloRecebido && modeloRecebido.trim() !== '') {
+                const termo = modeloRecebido.trim().toLowerCase();
 
-        // Verifica se existe algum parâmetro na URL
-        if (urlDecodificada && urlDecodificada !== '') {
-            
-            // Se na URL contiver a palavra "pato", "duck" ou o link bloqueado da KhronosGroup
-            if (urlDecodificada.toLowerCase() === 'pato' || 
-                urlDecodificada.toLowerCase() === 'duck' || 
-                urlDecodificada.includes('KhronosGroup')) {
-                visor.setAttribute('src', LINK_PATO_SEGURO);
-            } 
-            // Se contiver as palavras do astronauta
-            else if (urlDecodificada.toLowerCase() === 'astronauta' || 
-                     urlDecodificada.toLowerCase() === 'astronaut') {
-                visor.setAttribute('src', LINK_ASTRONAUTA_SEGURO);
-            } 
-            // Caso seja qualquer outra URL direta do seu Firebase
-            else {
-                visor.setAttribute('src', urlDecodificada);
+                // Verificação simplificada por palavra-chave
+                if (termo === 'pato' || termo === 'duck') {
+                    visor.setAttribute('src', LINK_PATO);
+                } 
+                else if (termo === 'astronauta' || termo === 'astronaut') {
+                    visor.setAttribute('src', LINK_ASTRONAUTA);
+                } 
+                // Se for a URL completa enviada pelo FlutterFlow ou Firebase
+                else {
+                    visor.setAttribute('src', modeloRecebido.trim());
+                }
+            } else {
+                // Caso não encontre parâmetros, carrega o astronauta por segurança
+                visor.setAttribute('src', LINK_ASTRONAUTA);
             }
-            
-        } else {
-            // Caso a URL venha sem parâmetros, exibe o astronauta por padrão
-            visor.setAttribute('src', LINK_ASTRONAUTA_SEGURO);
-        }
+        });
     </script>
 </body>
 </html>
