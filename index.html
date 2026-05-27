@@ -14,6 +14,10 @@
             overflow: hidden;
             background-color: transparent;
         }
+        #container-3d {
+            width: 100%;
+            height: 100%;
+        }
         model-viewer {
             width: 100%;
             height: 100%;
@@ -35,22 +39,12 @@
 </head>
 <body>
 
-    <model-viewer id="visor3d" 
-                  src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-                  ar 
-                  ar-modes="webxr scene-viewer quick-look" 
-                  camera-controls 
-                  touch-action="pan-y" 
-                  shadow-intensity="1" 
-                  auto-rotate>
-        <button slot="ar-button" id="ar-button">
-            Ver no meu espaço (RA)
-        </button>
-    </model-viewer>
+    <div id="container-3d"></div>
 
     <script>
+        // 1. Descobre qual modelo foi solicitado lendo a URL de forma bruta
         const urlCompleta = window.location.href;
-        const visor = document.getElementById('visor3d');
+        let modeloFinal = "https://modelviewer.dev/shared-assets/models/Astronaut.glb"; // Padrão de segurança
 
         if (urlCompleta.includes('modelo=')) {
             const partes = urlCompleta.split('modelo=');
@@ -59,16 +53,32 @@
             if (linkBruto) {
                 linkBruto = decodeURIComponent(linkBruto).trim();
 
-                // Se na URL tiver a palavra "pato", ele troca pelo Robô oficial do Google
+                // Se o usuário digitou 'pato' ou 'duck'
                 if (linkBruto.toLowerCase() === 'pato' || linkBruto.toLowerCase() === 'duck' || linkBruto.includes('Duck.glb')) {
-                    visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/RobotExpressive.glb');
+                    modeloFinal = "https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb";
                 } 
-                // Se for um link completo vindo do Firebase, injeta direto
+                // Se for um link completo vindo direto do Firebase (começando com http)
                 else if (linkBruto.toLowerCase().startsWith('http')) {
-                    visor.setAttribute('src', linkBruto);
+                    modeloFinal = linkBruto;
                 }
             }
         }
+
+        // 2. Cria e injeta a tag <model-viewer> inteira com o link definitivo fixado
+        const container = document.getElementById('container-3d');
+        container.innerHTML = `
+            <model-viewer src="${modeloFinal}"
+                          ar 
+                          ar-modes="webxr scene-viewer quick-look" 
+                          camera-controls 
+                          touch-action="pan-y" 
+                          shadow-intensity="1" 
+                          auto-rotate>
+                <button slot="ar-button" id="ar-button">
+                    Ver no meu espaço (RA)
+                </button>
+            </model-viewer>
+        `;
     </script>
 </body>
 </html>
