@@ -36,6 +36,7 @@
 <body>
 
     <model-viewer id="visor3d" 
+                  src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
                   ar 
                   ar-modes="webxr scene-viewer quick-look" 
                   camera-controls 
@@ -48,33 +49,20 @@
     </model-viewer>
 
     <script>
-        // Captura o parâmetro de forma nativa usando a API do navegador
+        // Método nativo e limpo para ler o link
         const urlParams = new URLSearchParams(window.location.search);
         const modeloRecebido = urlParams.get('modelo');
         const visor = document.getElementById('visor3d');
 
-        // LINKS REAIS E ONLINE (Testados e validados no servidor do Google)
-        const MODELO_ASTRONAUTA = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
-        const MODELO_CADEIRA = "https://modelviewer.dev/shared-assets/models/Chair.glb";
-
+        // Se o utilizador enviou um link completo (do Firebase, por exemplo), injeta-o.
+        // Se enviou apenas uma palavra simples (como 'pato'), mantém o Astronauta ativo para não quebrar.
         if (modeloRecebido && modeloRecebido.trim() !== "") {
-            const valor = modeloRecebido.trim().toLowerCase();
-
-            // Intercepta qualquer tentativa de carregar o pato, o capacete ou o link antigo da Khronos
-            if (valor === "pato" || valor === "capacete" || valor === "cadeira" || valor.includes("khronosgroup")) {
-                visor.setAttribute('src', MODELO_CADEIRA);
-            } 
-            // Se o parâmetro for para o astronauta
-            else if (valor === "astronauta" || valor === "astronaut") {
-                visor.setAttribute('src', MODELO_ASTRONAUTA);
-            } 
-            // Se for qualquer link direto e completo vindo do teu Firebase no futuro
-            else {
-                visor.setAttribute('src', modeloRecebido);
+            const link = modeloRecebido.trim();
+            
+            // Só altera o modelo se for um link web completo (começado por http)
+            if (link.toLowerCase().startsWith("http")) {
+                visor.setAttribute('src', link);
             }
-        } else {
-            // Fallback de segurança: se acederes sem parâmetros, mostra o astronauta
-            visor.setAttribute('src', MODELO_ASTRONAUTA);
         }
     </script>
 </body>
