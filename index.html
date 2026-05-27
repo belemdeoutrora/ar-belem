@@ -49,27 +49,31 @@
     </model-viewer>
 
     <script>
-        // Executa a troca do modelo assim que os elementos da página carregarem
-        window.addEventListener('DOMContentLoaded', () => {
-            const visor = document.getElementById('visor3d');
+        // 1. Pega o texto inteiro que está escrito na barra de endereços do navegador
+        const urlCompleta = window.location.href;
+        const visor = document.getElementById('visor3d');
+
+        // 2. Se dentro desse texto existir a palavra "modelo="
+        if (urlCompleta.includes('modelo=')) {
             
-            // Pega o que está escrito depois de "?modelo=" de forma limpa e nativa
-            const urlParams = new URLSearchParams(window.location.search);
-            const modeloRecebido = urlParams.get('modelo');
+            // Corta o texto e pega apenas o que está depois do sinal de "="
+            const partes = urlCompleta.split('modelo=');
+            let linkBruto = partes[1];
 
-            if (modeloRecebido && modeloRecebido.trim() !== "") {
-                const linkLimpo = modeloRecebido.trim();
+            if (linkBruto) {
+                // Decodifica caracteres especiais e limpa espaços
+                linkBruto = decodeURIComponent(linkBruto).trim();
 
-                // Se você digitar apenas "pato" ou "duck" para testar manualmente
-                if (linkLimpo.toLowerCase() === 'pato' || linkLimpo.toLowerCase() === 'duck') {
+                // Verifica se o usuário digitou apenas a palavra "pato" para testar
+                if (linkBruto.toLowerCase() === 'pato' || linkBruto.toLowerCase() === 'duck') {
                     visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb');
                 } 
-                // Se for a URL completa enviada pelo Firebase/FlutterFlow, aplica ela direto
-                else {
-                    visor.setAttribute('src', linkLimpo);
+                // Se for um link completo começando com http (Firebase/GitHub), injeta direto
+                else if (linkBruto.toLowerCase().startsWith('http')) {
+                    visor.setAttribute('src', linkBruto);
                 }
             }
-        });
+        }
     </script>
 </body>
 </html>
