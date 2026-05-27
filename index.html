@@ -12,11 +12,12 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #f0f0f0; /* Fundo cinza claro para sabermos que a página abriu */
+            background-color: transparent; /* De volta ao transparente para o FlutterFlow */
         }
         model-viewer {
             width: 100%;
             height: 100%;
+            background-color: transparent;
         }
         #ar-button {
             background-color: #ffffff;
@@ -50,7 +51,6 @@
 
     <script>
         function obterLinkModelo() {
-            // Método ultra-seguro para pegar tudo o que vem depois de "?modelo="
             const query = window.location.search;
             if (!query) return null;
             
@@ -58,7 +58,7 @@
             const indice = query.indexOf(termo);
             if (indice === -1) return null;
             
-            // Recorta a string exatamente após o "=" do "?modelo="
+            // Recorta o link bruto exatamente após o "?modelo="
             let resultado = query.substring(indice + termo.length);
             return resultado ? decodeURIComponent(resultado).trim() : null;
         }
@@ -67,19 +67,19 @@
         const urlDecodificada = obterLinkModelo();
 
         if (urlDecodificada) {
-            // Palavras de atalho para testes rápidos direto na URL
+            // Atalhos para testes rápidos digitando apenas a palavra
             if (urlDecodificada.toLowerCase() === 'pato' || urlDecodificada.toLowerCase() === 'duck') {
-                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb');
+                visor.setAttribute('src', 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb');
             } 
             else if (urlDecodificada.toLowerCase() === 'astronauta' || urlDecodificada.toLowerCase() === 'astronaut') {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             } 
-            // Se for o link completo do Firebase ou do modelviewer, injeta direto
+            // Links completos enviados pelo Firebase/FlutterFlow
             else {
                 visor.setAttribute('src', urlDecodificada);
             }
         } else {
-            // Se o link vier totalmente sem o parâmetro "?modelo=", usa o astronauta como segurança
+            // Segurança caso o parâmetro venha vazio
             visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
