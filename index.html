@@ -48,28 +48,35 @@
     </model-viewer>
 
     <script>
-        // 1. Captura o parâmetro enviado na URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const modeloRecebido = urlParams.get('modelo');
+        // 1. Captura o texto bruto contido na URL do navegador
+        const urlCompleta = window.location.href;
+        
+        // Split separa o link do seu site do link do modelo que vem após "?modelo="
+        const partesUrl = urlCompleta.split('?modelo=');
         const visor = document.getElementById('visor3d');
 
-        if (modeloRecebido && modeloRecebido.trim() !== '') {
-            // 2. Decodifica o link completo enviado pelo FlutterFlow
-            const urlDecodificada = decodeURIComponent(modeloRecebido).trim();
+        if (partesUrl.length > 1) {
+            // 2. Extrai o link do modelo isolando-o de parâmetros adicionais se houverem
+            let linkBruto = partesUrl[1].split('&')[0];
+            
+            // Decodifica os caracteres especiais de forma segura
+            let urlDecodificada = decodeURIComponent(linkBruto).trim();
 
-            // Atalho caso você ainda esteja usando as palavras de teste "pato" ou "astronauta" direto no navegador
+            // Atalhos caso seja digitado apenas termos simples direto no navegador
             if (urlDecodificada.toLowerCase() === 'pato' || urlDecodificada.toLowerCase() === 'duck') {
-                visor.setAttribute('src', 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb');
+                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb');
             } 
             else if (urlDecodificada.toLowerCase() === 'astronauta' || urlDecodificada.toLowerCase() === 'astronaut') {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             } 
-            // 3. SE FOR UM LINK DO FIREBASE OU GITHUB: Carrega o arquivo real direto, sem travar!
-            else {
+            // 3. Se for uma URL completa válida (Firebase ou GitHub), aplica direto no visor
+            else if (urlDecodificada !== '') {
                 visor.setAttribute('src', urlDecodificada);
+            } else {
+                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             }
         } else {
-            // Fallback de segurança caso o link venha 100% vazio
+            // Fallback de segurança caso nenhum parâmetro seja enviado
             visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
