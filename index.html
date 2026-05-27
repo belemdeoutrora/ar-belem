@@ -66,30 +66,31 @@
         const visor = document.getElementById('visor3d');
         const urlDecodificada = obterLinkModelo();
 
-        // Links de servidores alternativos com CORS totalmente liberado e aberto
-        const LINK_PATO_SEGURO = "https://raw.githubusercontent.com/google/model-viewer/master/packages/shared-assets/models/Duck.glb";
+        // Links públicos oficiais do Google com CORS 100% aberto e ativo
+        const LINK_PATO_SEGURO = "https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb";
         const LINK_ASTRONAUTA_SEGURO = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
 
-        if (urlDecodificada) {
-            // Se a URL contiver a palavra "pato", "duck" ou o link bloqueado da KhronosGroup, desvia para o link seguro
+        // Verifica se existe algum parâmetro na URL
+        if (urlDecodificada && urlDecodificada !== '') {
+            
+            // Se na URL contiver a palavra "pato", "duck" ou o link bloqueado da KhronosGroup
             if (urlDecodificada.toLowerCase() === 'pato' || 
                 urlDecodificada.toLowerCase() === 'duck' || 
                 urlDecodificada.includes('KhronosGroup')) {
                 visor.setAttribute('src', LINK_PATO_SEGURO);
             } 
-            // Se contiver "astronauta" ou "astronaut"
+            // Se contiver as palavras do astronauta
             else if (urlDecodificada.toLowerCase() === 'astronauta' || 
-                     urlDecodificada.toLowerCase() === 'astronaut' || 
-                     urlDecodificada.includes('Astronaut.glb')) {
+                     urlDecodificada.toLowerCase() === 'astronaut') {
                 visor.setAttribute('src', LINK_ASTRONAUTA_SEGURO);
             } 
-            // Para quaisquer outros links diretos (como os seus futuros modelos reais do Firebase)
-            else if (urlDecodificada !== '') {
+            // Caso seja qualquer outra URL direta do seu Firebase
+            else {
                 visor.setAttribute('src', urlDecodificada);
-            } else {
-                visor.setAttribute('src', LINK_ASTRONAUTA_SEGURO);
             }
+            
         } else {
+            // Caso a URL venha sem parâmetros, exibe o astronauta por padrão
             visor.setAttribute('src', LINK_ASTRONAUTA_SEGURO);
         }
     </script>
