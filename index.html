@@ -42,29 +42,32 @@
     <div id="container-3d"></div>
 
     <script>
-        // 1. Descobre qual modelo foi solicitado lendo a URL de forma bruta
+        // 1. Captura a URL da barra de endereços de forma bruta
         const urlCompleta = window.location.href;
-        let modeloFinal = "https://modelviewer.dev/shared-assets/models/Astronaut.glb"; // Padrão de segurança
+        
+        // Modelo padrão de segurança caso o link venha sem parâmetros
+        let modeloFinal = "https://modelviewer.dev/shared-assets/models/Astronaut.glb"; 
 
         if (urlCompleta.includes('modelo=')) {
             const partes = urlCompleta.split('modelo=');
             let linkBruto = partes[1];
 
             if (linkBruto) {
+                // Decodifica os caracteres especiais (como %2F e %3A do Firebase)
                 linkBruto = decodeURIComponent(linkBruto).trim();
 
-                // Se o usuário digitou 'pato' ou 'duck'
-                if (linkBruto.toLowerCase() === 'pato' || linkBruto.toLowerCase() === 'duck' || linkBruto.includes('Duck.glb')) {
-                    modeloFinal = "https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb";
-                } 
-                // Se for um link completo vindo direto do Firebase (começando com http)
+                // Atalho rápido apenas caso você digite manualmente a palavra "astronauta"
+                if (linkBruto.toLowerCase() === 'astronauta' || linkBruto.toLowerCase() === 'astronaut') {
+                    modeloFinal = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
+                }
+                // Se for um link web completo (visto no Firebase ou GitHub), aplica direto
                 else if (linkBruto.toLowerCase().startsWith('http')) {
                     modeloFinal = linkBruto;
                 }
             }
         }
 
-        // 2. Cria e injeta a tag <model-viewer> inteira com o link definitivo fixado
+        // 2. Monta o visualizador de forma estática com o link correto injetado de primeira
         const container = document.getElementById('container-3d');
         container.innerHTML = `
             <model-viewer src="${modeloFinal}"
