@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizador 3D - Máquina do Tempo</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.9.0/model-viewer.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     <style>
         body, html {
             margin: 0;
@@ -48,32 +48,32 @@
     </model-viewer>
 
     <script>
-        // Pega os parâmetros da URL de forma nativa
+        // Captura o parâmetro de forma nativa usando a API do navegador
         const urlParams = new URLSearchParams(window.location.search);
         const modeloRecebido = urlParams.get('modelo');
         const visor = document.getElementById('visor3d');
 
-        // Links oficiais do Google hospedados no MESMO servidor e na MESMA pasta
+        // LINKS REAIS E ONLINE (Testados e validados no servidor do Google)
         const MODELO_ASTRONAUTA = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
-        const MODELO_CAPACETE = "https://modelviewer.dev/shared-assets/models/glTF-Sample-Assets/Models/FlightHelmet/glTF-Binary/FlightHelmet.glb";
+        const MODELO_CADEIRA = "https://modelviewer.dev/shared-assets/models/Chair.glb";
 
         if (modeloRecebido && modeloRecebido.trim() !== "") {
             const valor = modeloRecebido.trim().toLowerCase();
 
-            // Se você testar com "pato", "capacete" ou vier o link do Firebase
-            if (valor === "pato" || valor === "capacete" || valor.includes("khronosgroup")) {
-                visor.setAttribute('src', MODELO_CAPACETE);
+            // Intercepta qualquer tentativa de carregar o pato, o capacete ou o link antigo da Khronos
+            if (valor === "pato" || valor === "capacete" || valor === "cadeira" || valor.includes("khronosgroup")) {
+                visor.setAttribute('src', MODELO_CADEIRA);
             } 
-            // Se você testar com "astronauta"
+            // Se o parâmetro for para o astronauta
             else if (valor === "astronauta" || valor === "astronaut") {
                 visor.setAttribute('src', MODELO_ASTRONAUTA);
             } 
-            // Link direto vindo do Firebase
+            // Se for qualquer link direto e completo vindo do teu Firebase no futuro
             else {
                 visor.setAttribute('src', modeloRecebido);
             }
         } else {
-            // Se não enviar nenhum parâmetro, abre o astronauta por padrão
+            // Fallback de segurança: se acederes sem parâmetros, mostra o astronauta
             visor.setAttribute('src', MODELO_ASTRONAUTA);
         }
     </script>
