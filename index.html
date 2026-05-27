@@ -49,21 +49,27 @@
     </model-viewer>
 
     <script>
-        // Método nativo e limpo para ler o link
-        const urlParams = new URLSearchParams(window.location.search);
-        const modeloRecebido = urlParams.get('modelo');
-        const visor = document.getElementById('visor3d');
-
-        // Se o utilizador enviou um link completo (do Firebase, por exemplo), injeta-o.
-        // Se enviou apenas uma palavra simples (como 'pato'), mantém o Astronauta ativo para não quebrar.
-        if (modeloRecebido && modeloRecebido.trim() !== "") {
-            const link = modeloRecebido.trim();
+        // Executa a troca do modelo assim que os elementos da página carregarem
+        window.addEventListener('DOMContentLoaded', () => {
+            const visor = document.getElementById('visor3d');
             
-            // Só altera o modelo se for um link web completo (começado por http)
-            if (link.toLowerCase().startsWith("http")) {
-                visor.setAttribute('src', link);
+            // Pega o que está escrito depois de "?modelo=" de forma limpa e nativa
+            const urlParams = new URLSearchParams(window.location.search);
+            const modeloRecebido = urlParams.get('modelo');
+
+            if (modeloRecebido && modeloRecebido.trim() !== "") {
+                const linkLimpo = modeloRecebido.trim();
+
+                // Se você digitar apenas "pato" ou "duck" para testar manualmente
+                if (linkLimpo.toLowerCase() === 'pato' || linkLimpo.toLowerCase() === 'duck') {
+                    visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb');
+                } 
+                // Se for a URL completa enviada pelo Firebase/FlutterFlow, aplica ela direto
+                else {
+                    visor.setAttribute('src', linkLimpo);
+                }
             }
-        }
+        });
     </script>
 </body>
 </html>
