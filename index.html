@@ -40,8 +40,7 @@
                   ar-modes="webxr scene-viewer quick-look" 
                   camera-controls 
                   touch-action="pan-y" 
-                  shadow-intensity="1"
-                  exposure="1"
+                  shadow-intensity="1" 
                   auto-rotate>
         <button slot="ar-button" id="ar-button">
             Ver no meu espaço (RA)
@@ -49,37 +48,35 @@
     </model-viewer>
 
     <script>
-        // Executa o script apenas após a página estar totalmente carregada
-        window.addEventListener('DOMContentLoaded', () => {
-            const visor = document.getElementById('visor3d');
-            
-            // Usando o método nativo e estável do navegador para pegar parâmetros
-            const parametros = new URLSearchParams(window.location.search);
-            const modeloRecebido = parametros.get('modelo');
+        // 1. Pegamos o link bruto direto da barra de endereço para o navegador não cortar as barras (//)
+        const urlCompleta = window.location.href;
+        
+        // 2. Isolamos o que vem depois de "?modelo="
+        const partes = urlCompleta.split('?modelo=');
+        const visor = document.getElementById('visor3d');
 
-            // Links de teste 100% ativos e com CORS liberado
-            const LINK_PATO = "https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb";
-            const LINK_ASTRONAUTA = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
+        // Se houver algo depois do "?modelo="
+        if (partes.length > 1) {
+            // Pega o link do modelo e limpa espaços vazios
+            const modeloRecebido = decodeURIComponent(partes[1]).trim();
 
-            if (modeloRecebido && modeloRecebido.trim() !== '') {
-                const termo = modeloRecebido.trim().toLowerCase();
-
-                // Verificação simplificada por palavra-chave
-                if (termo === 'pato' || termo === 'duck') {
-                    visor.setAttribute('src', LINK_PATO);
-                } 
-                else if (termo === 'astronauta' || termo === 'astronaut') {
-                    visor.setAttribute('src', LINK_ASTRONAUTA);
-                } 
-                // Se for a URL completa enviada pelo FlutterFlow ou Firebase
-                else {
-                    visor.setAttribute('src', modeloRecebido.trim());
-                }
+            // Atalhos caso você digite apenas as palavras de teste
+            if (modeloRecebido.toLowerCase() === 'pato' || modeloRecebido.toLowerCase() === 'duck') {
+                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb');
+            } 
+            else if (modeloRecebido.toLowerCase() === 'astronauta' || modeloRecebido.toLowerCase() === 'astronaut') {
+                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
+            } 
+            // Se for um link completo (do Firebase ou outro site), injeta direto no visor
+            else if (modeloRecebido !== '') {
+                visor.setAttribute('src', modeloRecebido);
             } else {
-                // Caso não encontre parâmetros, carrega o astronauta por segurança
-                visor.setAttribute('src', LINK_ASTRONAUTA);
+                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             }
-        });
+        } else {
+            // Se o link vier sem o "?modelo=", usa o astronauta por segurança
+            visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
+        }
     </script>
 </body>
 </html>
