@@ -12,7 +12,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #f0f0f0; /* Fundo cinza claro de segurança para os testes */
+            background-color: #f0f0f0; /* Fundo cinza claro para sabermos que a página abriu */
         }
         model-viewer {
             width: 100%;
@@ -49,31 +49,37 @@
     </model-viewer>
 
     <script>
-        // Captura a URL completa do navegador de forma bruta
-        const urlCompleta = window.location.href;
-        const partesUrl = urlCompleta.split('?modelo=');
+        function obterLinkModelo() {
+            // Método ultra-seguro para pegar tudo o que vem depois de "?modelo="
+            const query = window.location.search;
+            if (!query) return null;
+            
+            const termo = "?modelo=";
+            const indice = query.indexOf(termo);
+            if (indice === -1) return null;
+            
+            // Recorta a string exatamente após o "=" do "?modelo="
+            let resultado = query.substring(indice + termo.length);
+            return resultado ? decodeURIComponent(resultado).trim() : null;
+        }
+
         const visor = document.getElementById('visor3d');
+        const urlDecodificada = obterLinkModelo();
 
-        if (partesUrl.length > 1) {
-            let linkBruto = partesUrl[1].split('&')[0];
-            let urlDecodificada = decodeURIComponent(linkBruto).trim();
-
-            // Atalhos para digitação manual no navegador
+        if (urlDecodificada) {
+            // Palavras de atalho para testes rápidos direto na URL
             if (urlDecodificada.toLowerCase() === 'pato' || urlDecodificada.toLowerCase() === 'duck') {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb');
             } 
             else if (urlDecodificada.toLowerCase() === 'astronauta' || urlDecodificada.toLowerCase() === 'astronaut') {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             } 
-            // Se for um link completo (Firebase ou outro site)
-            else if (urlDecodificada !== '') {
+            // Se for o link completo do Firebase ou do modelviewer, injeta direto
+            else {
                 visor.setAttribute('src', urlDecodificada);
-            } else {
-                // Se o link após o igual estiver vazio, mostra o astronauta
-                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             }
         } else {
-            // Se não tiver o parâmetro "?modelo=", mostra o astronauta
+            // Se o link vier totalmente sem o parâmetro "?modelo=", usa o astronauta como segurança
             visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
