@@ -48,35 +48,35 @@
     </model-viewer>
 
     <script>
-        // 1. Captura o texto bruto contido na URL do navegador
+        // 1. Captura o texto completo da barra de endereços de forma bruta
         const urlCompleta = window.location.href;
         
-        // Split separa o link do seu site do link do modelo que vem após "?modelo="
+        // Separa o link do site do link do modelo usando o divisor "?modelo="
         const partesUrl = urlCompleta.split('?modelo=');
         const visor = document.getElementById('visor3d');
 
         if (partesUrl.length > 1) {
-            // 2. Extrai o link do modelo isolando-o de parâmetros adicionais se houverem
+            // Isola caso haja algum outro parâmetro do FlutterFlow com '&'
             let linkBruto = partesUrl[1].split('&')[0];
             
-            // Decodifica os caracteres especiais de forma segura
+            // Decodifica os caracteres especiais (como %2F, %3A) para formato de URL padrão
             let urlDecodificada = decodeURIComponent(linkBruto).trim();
 
-            // Atalhos caso seja digitado apenas termos simples direto no navegador
+            // Atalhos de digitação manual para testes rápidos
             if (urlDecodificada.toLowerCase() === 'pato' || urlDecodificada.toLowerCase() === 'duck') {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb');
             } 
             else if (urlDecodificada.toLowerCase() === 'astronauta' || urlDecodificada.toLowerCase() === 'astronaut') {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             } 
-            // 3. Se for uma URL completa válida (Firebase ou GitHub), aplica direto no visor
+            // Se for um link completo (Firebase ou modelviewer.dev), injeta direto no visor
             else if (urlDecodificada !== '') {
                 visor.setAttribute('src', urlDecodificada);
             } else {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             }
         } else {
-            // Fallback de segurança caso nenhum parâmetro seja enviado
+            // Segurança caso o link venha sem o parâmetro ?modelo=
             visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
