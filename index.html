@@ -48,16 +48,31 @@
     </model-viewer>
 
     <script>
-        // Captura o link completo do modelo enviado na URL
+        // 1. Captura o link enviado pelo FlutterFlow na URL
         const urlParams = new URLSearchParams(window.location.search);
         const modeloRecebido = urlParams.get('modelo');
 
-        // Se o FlutterFlow enviou um link, joga direto no visor sem restrições
+        // 2. Localiza o visor 3D na tela
+        const visor = document.getElementById('visor3d');
+
         if (modeloRecebido) {
-            document.getElementById('visor3d').setAttribute('src', decodeURIComponent(modeloRecebido));
+            const urlLimpa = modeloRecebido.trim();
+
+            // Se o link do FlutterFlow contiver "duck" ou "pato", força o carregamento correto do pato
+            if (urlLimpa.toLowerCase().includes('duck') || urlLimpa.toLowerCase().includes('pato')) {
+                visor.setAttribute('src', 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb');
+            } 
+            // Se contiver "astronauta" ou "astronaut", carrega o astronauta
+            else if (urlLimpa.toLowerCase().includes('astronaut')) {
+                visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
+            } 
+            // Se for qualquer outro link direto vindo do Firebase, aplica diretamente
+            else {
+                visor.setAttribute('src', urlLimpa);
+            }
         } else {
-            // Apenas se não vier NADA na URL, abre o astronauta por segurança
-            document.getElementById('visor3d').setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
+            // Padrão de segurança caso o link venha vazio por algum motivo
+            visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
 </body>
