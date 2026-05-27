@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizador 3D - Máquina do Tempo</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.9.0/model-viewer.min.js"></script>
     <style>
         body, html {
             margin: 0;
@@ -12,12 +12,11 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: transparent;
+            background-color: #f0f0f0; /* Fundo cinza claro de segurança para os testes */
         }
         model-viewer {
             width: 100%;
             height: 100%;
-            background-color: transparent;
         }
         #ar-button {
             background-color: #ffffff;
@@ -40,7 +39,9 @@
                   ar-modes="webxr scene-viewer quick-look" 
                   camera-controls 
                   touch-action="pan-y" 
-                  shadow-intensity="1" 
+                  shadow-intensity="1"
+                  exposure="1"
+                  environment-image="neutral"
                   auto-rotate>
         <button slot="ar-button" id="ar-button">
             Ver no meu espaço (RA)
@@ -48,35 +49,31 @@
     </model-viewer>
 
     <script>
-        // 1. Captura o texto completo da barra de endereços de forma bruta
+        // Captura a URL completa do navegador de forma bruta
         const urlCompleta = window.location.href;
-        
-        // Separa o link do site do link do modelo usando o divisor "?modelo="
         const partesUrl = urlCompleta.split('?modelo=');
         const visor = document.getElementById('visor3d');
 
         if (partesUrl.length > 1) {
-            // Isola caso haja algum outro parâmetro do FlutterFlow com '&'
             let linkBruto = partesUrl[1].split('&')[0];
-            
-            // Decodifica os caracteres especiais (como %2F, %3A) para formato de URL padrão
             let urlDecodificada = decodeURIComponent(linkBruto).trim();
 
-            // Atalhos de digitação manual para testes rápidos
+            // Atalhos para digitação manual no navegador
             if (urlDecodificada.toLowerCase() === 'pato' || urlDecodificada.toLowerCase() === 'duck') {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/shared-gltf/Duck.glb');
             } 
             else if (urlDecodificada.toLowerCase() === 'astronauta' || urlDecodificada.toLowerCase() === 'astronaut') {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             } 
-            // Se for um link completo (Firebase ou modelviewer.dev), injeta direto no visor
+            // Se for um link completo (Firebase ou outro site)
             else if (urlDecodificada !== '') {
                 visor.setAttribute('src', urlDecodificada);
             } else {
+                // Se o link após o igual estiver vazio, mostra o astronauta
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             }
         } else {
-            // Segurança caso o link venha sem o parâmetro ?modelo=
+            // Se não tiver o parâmetro "?modelo=", mostra o astronauta
             visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
