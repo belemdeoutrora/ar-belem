@@ -48,30 +48,28 @@
     </model-viewer>
 
     <script>
-        // 1. Captura o link enviado pelo FlutterFlow na URL
+        // 1. Captura o parâmetro enviado na URL
         const urlParams = new URLSearchParams(window.location.search);
         const modeloRecebido = urlParams.get('modelo');
-
-        // 2. Localiza o visor 3D na tela
         const visor = document.getElementById('visor3d');
 
         if (modeloRecebido) {
-            const urlLimpa = modeloRecebido.trim();
+            // 2. Decodifica os caracteres especiais gerados pela navegação do FlutterFlow
+            const urlDecodificada = decodeURIComponent(modeloRecebido).trim();
 
-            // Se o link do FlutterFlow contiver "duck" ou "pato", força o carregamento correto do pato
-            if (urlLimpa.toLowerCase().includes('duck') || urlLimpa.toLowerCase().includes('pato')) {
+            // 3. Força a identificação correta pelas palavras-chave contidas no link
+            if (urlDecodificada.toLowerCase().includes('duck') || urlDecodificada.toLowerCase().includes('pato')) {
                 visor.setAttribute('src', 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb');
             } 
-            // Se contiver "astronauta" ou "astronaut", carrega o astronauta
-            else if (urlLimpa.toLowerCase().includes('astronaut')) {
+            else if (urlDecodificada.toLowerCase().includes('astronaut')) {
                 visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
             } 
-            // Se for qualquer outro link direto vindo do Firebase, aplica diretamente
             else {
-                visor.setAttribute('src', urlLimpa);
+                // Caso seja outra URL direta configurada no Firebase
+                visor.setAttribute('src', urlDecodificada);
             }
         } else {
-            // Padrão de segurança caso o link venha vazio por algum motivo
+            // Fallback caso chegue completamente vazio
             visor.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
