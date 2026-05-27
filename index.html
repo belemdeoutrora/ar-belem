@@ -48,29 +48,16 @@
     </model-viewer>
 
     <script>
+        // Captura o link completo do modelo enviado na URL
         const urlParams = new URLSearchParams(window.location.search);
         const modeloRecebido = urlParams.get('modelo');
 
-        // Banco de links internos corrigido e testado
-        const modelosDisponiveis = {
-            'pato': 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb',
-            'astronauta': 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'
-        };
-
+        // Se o FlutterFlow enviou um link, joga direto no visor sem restrições
         if (modeloRecebido) {
-            const termoLimpo = modeloRecebido.toLowerCase().trim();
-            
-            if (modelosDisponiveis[termoLimpo]) {
-                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis[termoLimpo]);
-            } else if (termoLimpo.includes('duck')) {
-                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['pato']);
-            } else {
-                // Se receber qualquer outra coisa ou o astronauta
-                document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['astronauta']);
-            }
+            document.getElementById('visor3d').setAttribute('src', decodeURIComponent(modeloRecebido));
         } else {
-            // Padrão de segurança
-            document.getElementById('visor3d').setAttribute('src', modelosDisponiveis['astronauta']);
+            // Apenas se não vier NADA na URL, abre o astronauta por segurança
+            document.getElementById('visor3d').setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
         }
     </script>
 </body>
